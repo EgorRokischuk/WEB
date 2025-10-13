@@ -1,8 +1,9 @@
 interface StudentInterface {
   id: number;
   firstName: string;
-  lastsName: string;
+  lastName: string;
   middleName: string;
+  groupId: number;
   isDeleted?: boolean;
 };
 

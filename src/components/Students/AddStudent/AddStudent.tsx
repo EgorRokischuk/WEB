@@ -2,10 +2,12 @@
 
 import { useForm } from 'react-hook-form';
 import type StudentInterface from '@/types/StudentInterface';
+import type GroupInterface from '@/types/GroupInterface';
 import styles from './AddStudent.module.scss';
 
 interface Props {
   onAddStudent: (student: Omit<StudentInterface, 'id' | 'isDeleted'>) => void;
+  groups: GroupInterface[]; 
 }
 
 interface FormData {
@@ -15,7 +17,7 @@ interface FormData {
   groupId: string;
 }
 
-const AddStudent = ({ onAddStudent }: Props): React.ReactElement => {
+const AddStudent = ({ onAddStudent, groups }: Props): React.ReactElement => {
   const {
     register,
     handleSubmit,
@@ -52,12 +54,17 @@ const AddStudent = ({ onAddStudent }: Props): React.ReactElement => {
           className={styles.input}
         />
 
-        <input
-          placeholder="ID группы"
-          type="number"
+        <select
           {...register('groupId', { required: true })}
-          className={styles.input}
-        />
+          className={styles.select}
+        >
+          <option value="">Выберите группу</option>
+          {groups.map(group => (
+            <option key={group.id} value={group.id}>
+              {group.name}
+            </option>
+          ))}
+        </select>
 
         <button type="submit" className={styles.button}>
           Добавить студента

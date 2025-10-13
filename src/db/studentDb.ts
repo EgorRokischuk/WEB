@@ -105,7 +105,7 @@ export const addStudentDb = async (studentData: Omit<StudentInterface, 'id' | 'i
         firstName: studentData.firstName,
         lastName: studentData.lastName,
         middleName: studentData.middleName,
-        groupId: 1,
+        groupId: studentData.groupId,
         isDeleted: false
       };
       
