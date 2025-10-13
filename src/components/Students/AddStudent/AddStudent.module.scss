@@ -1,0 +1,44 @@
+.AddStudent {
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.title {
+  margin: 0 0 15px 0;
+  color: #333;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  
+  &:focus {
+    outline: none;
+    border-color: #28a745;
+  }
+}
+
+.button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  
+  &:hover {
+    background: #218838;
+  }
+}
