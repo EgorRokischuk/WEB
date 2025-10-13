@@ -26,15 +26,35 @@ const useStudents = (): StudentsHookInterface => {
    */
   const addStudentMutate = useMutation({
     mutationFn: async (student: Omit<StudentInterface, 'id' | 'isDeleted'>) => addStudentApi(student),
-    onSuccess: (newStudent) => {
-      // Обновляем кэш студентов, добавляя нового студента
+    onMutate: async (newStudentData) => {
+      await queryClient.cancelQueries({ queryKey: ['students'] });
+      
+      const previousStudents = queryClient.getQueryData<StudentInterface[]>(['students']);
+      const temporaryId = -Math.floor(Math.random() * 10000);
+      
+      const temporaryStudent: StudentInterface = {
+        id: temporaryId,
+        ...newStudentData,
+        isDeleted: false
+      };
+      
       queryClient.setQueryData<StudentInterface[]>(['students'], (oldStudents = []) => [
         ...oldStudents,
-        newStudent
+        temporaryStudent
       ]);
+      
+      return { previousStudents, temporaryId };
     },
-    onError: (err) => {
+    onError: (err, newStudentData, context) => {
       console.log('>>> addStudentMutate error', err);
+      queryClient.setQueryData<StudentInterface[]>(['students'], context?.previousStudents);
+    },
+    onSuccess: (newStudent, newStudentData, context) => {
+      queryClient.setQueryData<StudentInterface[]>(['students'], (oldStudents = []) => 
+        oldStudents.map(student => 
+          student.id === context?.temporaryId ? newStudent : student
+        )
+      );
     },
   });
 
