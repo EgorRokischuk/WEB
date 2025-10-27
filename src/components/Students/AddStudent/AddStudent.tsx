@@ -1,75 +1,49 @@
-'use client';
-
-import { useForm } from 'react-hook-form';
 import type StudentInterface from '@/types/StudentInterface';
-import type GroupInterface from '@/types/GroupInterface';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import styles from './AddStudent.module.scss';
 
+export type FormFields = Pick<StudentInterface, 'firstName' | 'lastName' | 'middleName'>;
+
 interface Props {
-  onAddStudent: (student: Omit<StudentInterface, 'id' | 'isDeleted'>) => void;
-  groups: GroupInterface[]; 
+  onAdd: (studentForm: FormFields) => void;
 }
 
-interface FormData {
-  firstName: string;
-  lastName: string;
-  middleName: string;
-  groupId: string;
-}
-
-const AddStudent = ({ onAddStudent, groups }: Props): React.ReactElement => {
+const AddStudent = ({ onAdd }: Props): React.ReactElement => {
   const {
     register,
     handleSubmit,
-    reset,
-  } = useForm<FormData>();
+    formState: { errors },
+  } = useForm<FormFields>();
 
-  const onSubmit = (data: FormData): void => {
-    onAddStudent({
-      ...data,
-      groupId: Number(data.groupId)
-    });
-    reset();
-  };
+  const onSubmit: SubmitHandler<FormFields> = studentForm => onAdd(studentForm);
 
   return (
     <div className={styles.AddStudent}>
-      <h3 className={styles.title}>Добавить студента</h3>
-      <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <h2>Добавления студента</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+
         <input
           placeholder="Фамилия"
           {...register('lastName', { required: true })}
-          className={styles.input}
         />
-        
+        {errors.lastName && <div>Обязательное поле</div>}
+
         <input
           placeholder="Имя"
           {...register('firstName', { required: true })}
-          className={styles.input}
         />
-        
+        {errors.firstName && <div>Обязательное поле</div>}
+
         <input
           placeholder="Отчество"
           {...register('middleName', { required: true })}
-          className={styles.input}
         />
+        {errors.middleName && <div>Обязательное поле</div>}
 
-        <select
-          {...register('groupId', { required: true })}
-          className={styles.select}
-        >
-          <option value="">Выберите группу</option>
-          {groups.map(group => (
-            <option key={group.id} value={group.id}>
-              {group.name}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit" className={styles.button}>
-          Добавить студента
-        </button>
+        <input type="submit" value="Добавить" />
       </form>
+
     </div>
   );
 };

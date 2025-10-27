@@ -1,6 +1,5 @@
-import { getStudentsDb } from '@/db/studentDb';
-import { addStudentDb } from '@/db/studentDb';
-import type StudentInterface from '@/types/StudentInterface';
+import { getStudentsDb, addStudentDb } from '@/db/studentDb';
+import { type NextApiRequest } from 'next/types';
 
 export async function GET(): Promise<Response> {
   const students = await getStudentsDb();
@@ -10,25 +9,19 @@ export async function GET(): Promise<Response> {
       'Content-Type': 'application/json',
     },
   });
-}
+};
+export async function POST(req: NextApiRequest): Promise<Response> {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const student = await req.json();
+  delete student['id'];
+  const newStudent = await addStudentDb(student);
 
-export async function POST(request: Request): Promise<Response> {
-  try {
-    const studentData: Omit<StudentInterface, 'id' | 'isDeleted'> = await request.json();
-    const newStudent = await addStudentDb(studentData);
-    
-    return new Response(JSON.stringify(newStudent), {
-      status: 201,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: 'Ошибка при добавлении студента' }), {
-      status: 500,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  }
-}
+  console.log(newStudent);
+  return new Response(JSON.stringify(newStudent), {
+    status: 201,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};

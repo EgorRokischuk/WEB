@@ -1,68 +1,61 @@
 'use client';
 
 import useStudents from '@/hooks/useStudents';
-import useGroups from '@/hooks/useGroups';
 import type StudentInterface from '@/types/StudentInterface';
 import styles from './Students.module.scss';
 import Student from './Student/Student';
-import AddStudent from './AddStudent/AddStudent';
+import AddStudent, { type FormFields } from './AddStudent/AddStudent';
+import { v4 as uuidv4 } from 'uuid';
 
 const Students = (): React.ReactElement => {
-  const { students, deleteStudentMutate, addStudentMutate } = useStudents();
-  const { groups, isLoading } = useGroups();
+  const {
+    students,
+    deleteStudentMutate,
+    addStudentMutate,
+  } = useStudents();
 
+  /**
+   * Удаление студента - обработчик события нажатия "удалить"
+   * @param studentId Ид студента
+   */
   const onDeleteHandler = (studentId: number): void => {
-    deleteStudentMutate(studentId);
+    if (confirm('Удалить студента?')) {
+      debugger;
+      console.log('onDeleteHandler', studentId);
+      
+
+      deleteStudentMutate(studentId);
+    }
   };
 
-  const onAddStudentHandler = (studentData: Omit<StudentInterface, 'id' | 'isDeleted'>): void => {
-    addStudentMutate(studentData);
-  };
+  /**
+   * Добавления студента - обработчик события нажатия "добавить"
+   * @param studentFormField Форма студента
+   */
+  const onAddHandler = (studentFormField: FormFields): void => {
+    debugger;
+    console.log('Добавление студента', studentFormField);
 
-  // Функция для получения студентов по группе
-  const getStudentsByGroup = (groupId: number): StudentInterface[] => {
-    return students.filter(student => student.groupId === groupId);
+    addStudentMutate({
+      id: -1,
+      uuid: uuidv4(),
+      ...studentFormField,
+      contacts: "не заполнено",
+      groupId: 1,
+    });
   };
-
-  if (isLoading) {
-    return <div>Загрузка групп...</div>;
-  }
 
   return (
     <div className={styles.Students}>
-      {/* добавление студента */}
-      <AddStudent onAddStudent={onAddStudentHandler} groups={groups} />
-      
-      {/* список студентов по группам */}
-      <div className={styles.groupsList}>
-        <h3>Список студентов по группам</h3>
-        
-        {groups.map(group => {
-          const groupStudents = getStudentsByGroup(group.id);
-          
-          return (
-            <div key={group.id} className={styles.group}>
-              <h4 className={styles.groupHeader}>
-                {group.name} ({groupStudents.length} студентов)
-              </h4>
-              
-              <div className={styles.studentsInGroup}>
-                {groupStudents.length === 0 ? (
-                  <p className={styles.emptyGroup}>Нет студентов в этой группе</p>
-                ) : (
-                  groupStudents.map(student => (
-                    <Student
-                      key={student.id}
-                      student={student}
-                      onDelete={onDeleteHandler}
-                    />
-                  ))
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <AddStudent onAdd={onAddHandler} />
+
+      {students.map((student: StudentInterface) => (
+        <Student
+          key={student.id || student.uuid}
+          student={student}
+          onDelete={onDeleteHandler}
+        />
+      ))}
     </div>
   );
 };
