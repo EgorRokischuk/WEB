@@ -22,8 +22,7 @@ const init = async (): Promise<void> => {
     console.log(error);
   }
 };
-
-await init(); 
+await init();
 
 // AppDataSource.initialize()
 //   .then(() => {

@@ -6,7 +6,7 @@ interface StudentInterface {
   firstName: string;
   lastName: string;
   middleName: string;
-  contacts: string;
+  contacts?: string;
   groupId: number;
   isDeleted?: boolean;
   isNew?: boolean;

@@ -85,4 +85,3 @@ http://localhost:3000/api/groups - апи
 - TanStackQuery - https://tanstack.com/query/latest
 
 - https://nextjs.org/docs/app/api-reference/file-conventions/route
-
