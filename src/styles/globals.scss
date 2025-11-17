@@ -1,12 +1,12 @@
 @use './main';
 
 :root {  
-  --color: #272727;
-  --color2: #FFF;
-  --color3: #F00;
-  --background: #FFF;
-  --background2: #E1E1E1;
-  --background3: #434343;  
+  --color: #233241;
+  --color2: #1565C0;
+  --color3: #1565C0;
+  --background: #FFFFFF;
+  --background2: #DBEDFD;
+  --background3: #DBEDFD;  
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,7 +21,7 @@
 }
 
 @font-face {
-  font-family: 'PTSans';
+  font-family: 'Arial';
   src: local('PTSans'), local('PTSans'),
   url('/fonts/PTSansRegular.woff') format('woff');
   font-weight: 400;
@@ -29,7 +29,7 @@
 }
 
 @font-face {
-  font-family: 'PTSans';
+  font-family: 'Arial';
   src: local('PTSans'), local('PTSans'),
   url('/fonts/PTSansBold.woff') format('woff');
   font-weight: 700;
@@ -74,7 +74,7 @@ body {
 
 h1 {
   @include commons;
-  font-size: 42px;
+  font-size: 40px;
   font-weight: bold;
   color: var(--current-color);
 
@@ -107,7 +107,7 @@ h3 {
 
 h4 {
   @include commons;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: bold;
   color: var(--link-color);
 
@@ -118,9 +118,9 @@ h4 {
 
 a {
     &:link {
-    color: var(--color);
+    color: #ee8523;
   }
   &:visited {
-    color: var(--color);
+    color: #1565C0;
   }
 }
