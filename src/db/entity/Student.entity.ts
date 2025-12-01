@@ -27,4 +27,4 @@ export class Student {
   @ManyToOne(() => Group, { nullable: true })
   @JoinColumn({ name: 'groupId' })
   group?: Group;
-}
+};

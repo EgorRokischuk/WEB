@@ -14,4 +14,4 @@ export class Group {
 
   @Column()
   contacts!: string;
-}
+};

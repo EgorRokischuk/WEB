@@ -21,13 +21,9 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>): Promise<React.ReactElement> => {
-  
   const cookieStore = await cookies();
-
   const accessToken = cookieStore.get('accessToken')?.value;
-
   const userFromServer = verifyAccessToken(accessToken);
-
     // выполняется на сервере - загрузка студентов
   await queryClient.prefetchQuery({
     queryKey: ['students'],
@@ -57,5 +53,4 @@ const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>)
     </TanStackQuery>
   );
 };
-
 export default RootLayout;

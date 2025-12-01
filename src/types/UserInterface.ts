@@ -4,4 +4,4 @@ export default interface UserInterface {
   fullName: string;
   password: string;
   isActive: boolean;
-}
+};
