@@ -1,39 +1,51 @@
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
-import { Group } from './entity/Group.entity';
+import { DataSource, type DataSourceOptions } from 'typeorm';
 import { Student } from './entity/Student.entity';
+import { Group } from './entity/Group.entity';
 import { User } from './entity/User.entity';
 
-const AppDataSource = new DataSource({
-  type: 'sqlite',
-  database: process.env.DB ?? './db/vki-web.db', // Path to your SQLite database file
-  synchronize: true, // Auto-create schema on startup (use with caution in production)
-  //synchronize: process.env.NODE_ENV !== 'production', // Отключаем в production
-  migrationsRun: process.env.NODE_ENV === 'production', // Включаем миграции в production
-  logging: false,
-  entities: [Group, Student, User],
-});
+const timeout = 30000;
 
-// to initialize the initial connection with the database, register all entities
-// and "synchronize" database schema, call "initialize()" method of a newly created database
-// once in your application bootstrap
-const init = async (): Promise<void> => {
+const config: DataSourceOptions = {
+  ...(process.env.POSTGRES
+    ? {
+      type: 'postgres',
+      url: process.env.POSTGRES,
+      ssl: true,
+      connectTimeoutMS: timeout,
+      extra: {
+        ssl: { rejectUnauthorized: false },
+        connectionTimeoutMillis: timeout,
+        query_timeout: timeout,
+        idle_in_transaction_session_timeout: timeout,
+      },
+    }
+    : {
+      type: 'sqlite',
+      database: process.env.DB ?? './db/vki-web.db',
+    }),
+  synchronize: process.env.NODE_ENV !== 'production',
+  migrationsRun: process.env.NODE_ENV === 'production',
+  logging: false,
+  entities: [Student, Group, User],
+};
+
+const AppDataSource = new DataSource(config);
+
+export const dbInit = async (): Promise<void> => {
   try {
+    if (AppDataSource.isInitialized) {
+      console.log('AppDataSource.isInitialized');
+      return;
+    }
     await AppDataSource.initialize();
+    console.log('AppDataSource.initialize');
   }
   catch (error) {
     console.log(error);
   }
 };
-await init();
 
-// AppDataSource.initialize()
-//   .then(() => {
-//     console.log('Data Source has been initialized!');
-//     // You can now interact with your entities
-//   })
-//   .catch((err) => {
-//     console.error('Error during Data Source initialization:', err);
-//   });
+await dbInit();
 
 export default AppDataSource;
